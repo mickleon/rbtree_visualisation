@@ -24,6 +24,8 @@
         Node* min(Node *node);
         Node* min();
         void print(bool show_null_leaves = false);
+        void clear(Node* node);
+        void clear();
     private:
         std::vector<std::vector<std::pair<Node*, int>>> array;
         Node* root;
@@ -36,6 +38,5 @@
         int height(Node *node);
         int height();
         void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);
-        void clear(Node* node);
     };
 #endif

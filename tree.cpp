@@ -317,3 +317,12 @@ void Tree::clear(Node* node) {
         delete node;
     }
 }
+
+// Overload of previous function, where `node` is a tree roor `Tree::root`
+void Tree::clear() {
+    if (Tree::root) {
+        Tree::clear(Tree::root->left);
+        Tree::clear(Tree::root->right);
+        delete Tree::root;
+    }
+}

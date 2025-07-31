@@ -24,7 +24,9 @@ The following functions are available for working with tree:
 - `Node* Tree::max()`: overload of previous function, where `node` is a tree roor `Tree::root`.
 - `Node* Tree::min(Node *node)`: returns a pointer to a node in the subtree `node` with the minimal value.
 - `Node* Tree::min()`: overload of previous function, where `node` is a tree roor `Tree::root`.
-- `void Tree::print(bool show_null_leaves = false)`: outputs the tree to the console. It has optional parameter `show_null_leaves` that is false by default, responsible for displaying null leaves
+- `void Tree::print(bool show_null_leaves = false)`: outputs the tree to the console. It has optional parameter `show_null_leaves` that is false by default, responsible for displaying null leaves.
+- `void clear(Node* node)`: erases all the nodes from the subtree `node`.
+- `void clear()` overload of previous function, where `node` is a tree roor `Tree::root`.
 
 # Example of output
 
