@@ -23,7 +23,7 @@
         Node* max();
         Node* min(Node *node);
         Node* min();
-        void print();
+        void print(bool show_null_leaves = false);
     private:
         std::vector<std::vector<std::pair<Node*, int>>> array;
         Node* root;
@@ -35,7 +35,7 @@
         void insert_fixup(Node *node);
         int height(Node *node);
         int height();
-        void make_array(Node *node, int depth = 0, int count = 1);
+        void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);
         void clear(Node* node);
     };
 #endif

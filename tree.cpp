@@ -220,12 +220,18 @@ int Tree::height() {
 }
 
 // Traversal with depth calculation and node offset from the left edge of the level
-void Tree::make_array(Node *node, int depth, int count) {
+void Tree::make_array(Node *node, bool show_null_leaves, int depth, int count) {
     Tree::array[depth].push_back({node, count - (1 << depth)});
     if (node->left) 
-        Tree::make_array(node->left, depth + 1, count*2);
+        Tree::make_array(node->left, show_null_leaves, depth + 1, count*2);
+    else if (show_null_leaves)
+        Tree::array[depth + 1]
+            .push_back({nullptr, count*2 - (1 << depth+1)});
     if (node->right) 
-        Tree::make_array(node->right, depth + 1, count*2 + 1);    
+        Tree::make_array(node->right, show_null_leaves, depth + 1, count*2 + 1);
+    else if (show_null_leaves)
+        Tree::array[depth + 1]
+            .push_back({nullptr, (count*2 + 1) - (1 << depth+1)});        
 }
 
 // The number of characters to output the number
@@ -248,16 +254,18 @@ void print_node(Node *node, int d) {
 }
 
 // Function for tree output
-void Tree::print(){
+void Tree::print(bool show_null_leaves){
     if (Tree::root == nullptr) {
         printf("NULL TREE\n");
         return;
     }
     int height = Tree::height();
+    if (show_null_leaves)
+        height++;
     Tree::array.assign(height, {});
-    Tree::make_array(Tree::root);
+    Tree::make_array(Tree::root, show_null_leaves);
 
-    // Maximum number of characters of node value in tree 
+    // Maximum number of digit of node in tree 
     int d = std::max(digit_count(Tree::max()->inf),
         digit_count(Tree::min()->inf));
     // Space at the beginning of each level
