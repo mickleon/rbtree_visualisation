@@ -120,13 +120,23 @@ void Tree::insert_fixup(Node *node) {
         else { // Uncle is black
             Node *g = p->parent;
             if (node == p->left) {
-                if (p == g->right)
-                    left_rotate(p);
-                right_rotate(g);
-            } else {
                 if (p == g->left)
-                    right_rotate(p);
-                left_rotate(g);
+                    Tree::right_rotate(g);
+                else {
+                    Tree::right_rotate(p);
+                    p = p->parent;
+                    g = p->parent;
+                    Tree::left_rotate(g);
+                }
+            } else {
+                if (p == g->right)
+                    Tree::left_rotate(g);
+                else {
+                    Tree::left_rotate(p);
+                    p = p->parent;
+                    g = p->parent;
+                    Tree::right_rotate(g);
+                }
             }
             std::swap(g->color, p->color);
         }
