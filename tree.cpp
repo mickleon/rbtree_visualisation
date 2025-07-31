@@ -104,7 +104,7 @@ void Tree::insert(int value) {
 }
 
 // Auxullary function for `insert`, it does a fixup of a tree
-// Exprcted node `node` is not a root
+// Expected node `node` is not a root
 void Tree::insert_fixup(Node *node) {
     Node *p = node->parent;
     if (p->color == 'r') { // Parent is red
@@ -187,7 +187,7 @@ Node* Tree::find(Node *node, int value) {
     return Tree::find(node->right, value);
 }
 
-// Overload of previous function, where `node` is a tree roor `Tree::root`
+// Overload of previous function, where `node` is a tree root `Tree::root`
 Node* Tree::find(int value) {
     return Tree::find(Tree::root, value);
 }
@@ -202,7 +202,7 @@ Node* Tree::max(Node *node) {
     return y;
 }
 
-// Overload of previous function, where `node` is a tree roor `Tree::root`
+// Overload of previous function, where `node` is a tree root `Tree::root`
 Node* Tree::max() {
     return Tree::max(Tree::root);
 }
@@ -217,7 +217,7 @@ Node* Tree::min(Node *node) {
     return y;
 }
 
-// Overload of previous function, where `node` is a tree roor `Tree::root`
+// Overload of previous function, where `node` is a tree root `Tree::root`
 Node* Tree::min() {
     return Tree::min(Tree::root);
 }
@@ -229,7 +229,7 @@ int Tree::height(Node* node) {
         Tree::height(node->right));
 }
 
-// Overload of previous function, where `node` is a tree roor `Tree::root`
+// Overload of previous function, where `node` is a tree root `Tree::root`
 int Tree::height() {
     if (!Tree::root)
         return 0;
@@ -328,7 +328,7 @@ void Tree::clear(Node* node) {
     }
 }
 
-// Overload of previous function, where `node` is a tree roor `Tree::root`
+// Overload of previous function, where `node` is a tree root `Tree::root`
 void Tree::clear() {
     if (Tree::root) {
         Tree::clear(Tree::root->left);
