@@ -15,10 +15,10 @@
     public:
         Tree(): root(nullptr) {};
         ~Tree() {clear(root);}
-        Node* find(Node *node, int value);
-        Node* find(int value);
         void insert(int value);
         void erase(Node *node);
+        Node* find(Node *node, int value);
+        Node* find(int value);
         Node* max(Node *node);
         Node* max();
         Node* min(Node *node);

@@ -4,13 +4,7 @@
 
 #include "tree.h"
 
-void print_space(int n){
-    if (n < 1)
-        return;
-    std::string s(n, ' ');
-    std::cout << s;
-}
-
+// Rotates the tree to the left around the node `p`
 void Tree::left_rotate(Node *p) {
     if (!p || !p->right) return;
     Node* c = p->right;       
@@ -28,6 +22,7 @@ void Tree::left_rotate(Node *p) {
     p->parent = c;
 }
 
+// Rotates the tree to the right around the node `p`
 void Tree::right_rotate(Node *p) {
     if (!p || !p->left) return;
     Node *c = p->left;
@@ -45,12 +40,14 @@ void Tree::right_rotate(Node *p) {
     p->parent = c;
 }
 
+// Returns the grandparent of node `x`
 Node* Tree::grandparent(Node* x) {
     if (!x || !x->parent)
         return nullptr;
     return x->parent->parent;
 }
 
+// Returns the uncle of node `x`
 Node* Tree::uncle(Node* x) {
     Node* g = grandparent(x);
     if (!g)
@@ -61,6 +58,7 @@ Node* Tree::uncle(Node* x) {
         return g->left;
 }
 
+// Returns the sibling of node `x`
 Node* Tree::sibling(Node* x) {
     if (x && x->parent) {
         if (x == x->parent->left)
@@ -71,6 +69,7 @@ Node* Tree::sibling(Node* x) {
     return nullptr;
 }
 
+// Inserts node with value `value` to a tree and calls the fixup function
 void Tree::insert(int value) {
     Node* node = new Node(value);
     if (!Tree::root) {
@@ -104,7 +103,8 @@ void Tree::insert(int value) {
     Tree::insert_fixup(node);
 }
 
-// Node is not a root
+// Auxullary function for `insert`, it does a fixup of a tree
+// Exprcted node `node` is not a root
 void Tree::insert_fixup(Node *node) {
     Node *p = node->parent;
     if (p->color == 'r') { // Parent is red
@@ -133,18 +133,7 @@ void Tree::insert_fixup(Node *node) {
     }
 }
 
-Node* Tree::find(Node *node, int value) {
-    if (!node || node->inf == value)
-        return node;
-    if (value < node->inf)
-        return Tree::find(node->left, value);
-    return Tree::find(node->right, value);
-}
-
-Node* Tree::find(int value) {
-    return Tree::find(Tree::root, value);
-}
-
+// Erases the node `node` from tree (now without a fixup)
 void Tree::erase(Node *node) {
     Node *p = node->parent;
     if (!node->left && !node->right) { // No children
@@ -179,6 +168,21 @@ void Tree::erase(Node *node) {
     }
 }
 
+// Returns a pointer to a node in the subtree `node` with the value `value`
+Node* Tree::find(Node *node, int value) {
+    if (!node || node->inf == value)
+        return node;
+    if (value < node->inf)
+        return Tree::find(node->left, value);
+    return Tree::find(node->right, value);
+}
+
+// Overload of previous function, where `node` is a tree roor `Tree::root`
+Node* Tree::find(int value) {
+    return Tree::find(Tree::root, value);
+}
+
+// Returns a pointer to a node in the subtree `node` with the maximal value
 Node* Tree::max(Node *node) {
     if (!node)
         return nullptr;
@@ -188,10 +192,12 @@ Node* Tree::max(Node *node) {
     return y;
 }
 
+// Overload of previous function, where `node` is a tree roor `Tree::root`
 Node* Tree::max() {
     return Tree::max(Tree::root);
 }
 
+// Returns a pointer to a node in the subtree `node` with the minimal value
 Node* Tree::min(Node *node) {
     if (!node)
         return nullptr;
@@ -201,6 +207,7 @@ Node* Tree::min(Node *node) {
     return y;
 }
 
+// Overload of previous function, where `node` is a tree roor `Tree::root`
 Node* Tree::min() {
     return Tree::min(Tree::root);
 }
@@ -212,6 +219,7 @@ int Tree::height(Node* node) {
         Tree::height(node->right));
 }
 
+// Overload of previous function, where `node` is a tree roor `Tree::root`
 int Tree::height() {
     if (!Tree::root)
         return 0;
@@ -244,6 +252,7 @@ int digit_count(int x) {
         return 1;
 }
 
+// Auxulary function for the `print`, it outputs one node `node`, fills up to `d` characters with spaces
 void print_node(Node *node, int d) {
     if (!node)
         printf("%*c", d, 'n');
@@ -251,6 +260,14 @@ void print_node(Node *node, int d) {
         printf("\033[31m%*ld\033[0m", d, static_cast<long>(node->inf));
     else
         printf("%*ld", d, static_cast<long>(node->inf));
+}
+
+// Prints space n times
+void print_space(int n){
+    if (n < 1)
+        return;
+    std::string s(n, ' ');
+    std::cout << s;
 }
 
 // Function for tree output
@@ -292,6 +309,7 @@ void Tree::print(bool show_null_leaves){
     }
 }
 
+// Erases all the nodes from the subtree `node`
 void Tree::clear(Node* node) {
     if (node) {
         Tree::clear(node->left);
