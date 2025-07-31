@@ -16,7 +16,7 @@
         Tree(): root(nullptr) {};
         ~Tree() {clear(root);}
         void insert(int value);
-        void erase(Node *node);
+        void erase(int value);
         Node* find(Node *node, int value);
         Node* find(int value);
         Node* max(Node *node);
@@ -35,6 +35,7 @@
         Node* uncle(Node* x);
         Node* sibling(Node* x);
         void insert_fixup(Node *node);
+        void erase_node(Node *p);
         int height(Node *node);
         int height();
         void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);

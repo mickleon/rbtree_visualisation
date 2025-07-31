@@ -114,7 +114,7 @@ void Tree::insert_fixup(Node *node) {
             Node *g = p->parent;
             if (g->parent) {
                 g->color = 'r';
-                insert_fixup(g);
+                Tree::insert_fixup(g);
             }
         }
         else { // Uncle is black
@@ -143,39 +143,46 @@ void Tree::insert_fixup(Node *node) {
     }
 }
 
-// Erases the node `node` from tree (now without a fixup)
-void Tree::erase(Node *node) {
+// Erases the node with value `value` from tree and calls the fixup function
+void Tree::erase(int value) {
+    Node *node = Tree::find(value);
+    if (node)
+        Tree::erase_node(node);
+}
+
+// Erases the node `node` from tree and calls the fixup function
+void Tree::erase_node(Node* node) {
     Node *p = node->parent;
     if (!node->left && !node->right) { // No children
-        if (!p) // Only one node in tree
+        if (!p) // Root
             Tree::root = nullptr;
         else {
-            if (p->left == node) p->left = nullptr;
-            else if (p->right == node) p->right = nullptr;
+            if (p->left == node)
+                p->left = nullptr;
+            else
+                p->right = nullptr;
         }
         delete node;
+        return;
     }
-    else if (!node->left || !node->right) { // 1 child
+    if (!node->left || !node->right) { // 1 child
         Node *child = node->left ? node->left : node->right;
-        if (!p) // Root
+        if (!p) { // Root
             Tree::root = child;
-        else {
-            if (p->left == node) p->left = child;
-            else if (p->right == node) p->right = child;
+        } else {
+            if (p->left == node)
+                p->left = child;
+            else
+                p->right = child;
         }
         child->parent = p;
         delete node;
-    } else { // 2 childer
-        Node *succ = Tree::min(node->right);
-        node->inf = succ->inf;
-        if (succ->parent->left == succ) 
-            succ->parent->left = succ->right;
-        else
-            succ->parent->right = succ->right;
-        if (succ->right)
-            succ->right->parent = succ->parent;
-        delete succ;
+        return;
     }
+    // 2 childer
+    Node *succ = Tree::min(node->right);
+    std::swap(succ->inf, node->inf);
+    Tree::erase_node(succ);
 }
 
 // Returns a pointer to a node in the subtree `node` with the value `value`

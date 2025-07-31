@@ -32,9 +32,7 @@ int main() {
             case '2': {
                 printf("Node to erase: ");
                 cin >> x;
-                Node *y = tr.find(x);
-                if (y)
-                    tr.erase(y);
+                tr.erase(x);
                 tr.print();
                 break;
             }

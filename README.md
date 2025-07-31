@@ -17,7 +17,7 @@ g++ main.cpp tree.cpp -o main && ./main
 The following functions are available for working with tree:
 
 - `void Tree::insert(int value)`: inserts node with value `value` to a tree and calls the fixup function.
-- `void Tree::erase(Node *node)`: erases the node `node` from tree (now without a fixup).
+- `void Tree::erase(Node *node)`: erases the node with value `value` from tree and calls the fixup function.
 - `Node* Tree::find(Node *node, int value)`: returns a pointer to a node in the subtree `node` with the value `value`.
 - `Node* Tree::find(int value)`: overload of previous function, where `node` is a tree root `Tree::root`.
 - `Node* Tree::max(Node *node)`: returns a pointer to a node in the subtree `node` with the maximal value.
