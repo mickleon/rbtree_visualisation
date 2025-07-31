@@ -74,6 +74,7 @@ Node* Tree::sibling(Node* x) {
 void Tree::insert(int value) {
     Node* node = new Node(value);
     if (!Tree::root) {
+        node->color = 'b';
         Tree::root = node;
         return;
     }
@@ -98,6 +99,36 @@ void Tree::insert(int value) {
         } else {
             delete node;
             return;
+        }
+    }
+    Tree::insert_fixup(node);
+}
+
+// Node is not a root
+void Tree::insert_fixup(Node *node) {
+    Node *p = node->parent;
+    if (p->color == 'r') { // Parent is red
+        Node *u = sibling(p);
+        if (u && u->color == 'r') { // Uncle is red
+            p->color = u->color = 'b';
+            Node *g = p->parent;
+            if (g->parent) {
+                g->color = 'r';
+                insert_fixup(g);
+            }
+        }
+        else { // Uncle is black
+            Node *g = p->parent;
+            if (node == p->left) {
+                if (p == g->right)
+                    left_rotate(p);
+                right_rotate(g);
+            } else {
+                if (p == g->left)
+                    right_rotate(p);
+                left_rotate(g);
+            }
+            std::swap(g->color, p->color);
         }
     }
 }
@@ -194,7 +225,7 @@ void Tree::make_array(Node *node, int depth, int count) {
     if (node->left) 
         Tree::make_array(node->left, depth + 1, count*2);
     if (node->right) 
-        Tree::make_array(node->right, depth + 1, count*2 + 1);     
+        Tree::make_array(node->right, depth + 1, count*2 + 1);    
 }
 
 // The number of characters to output the number
@@ -210,8 +241,10 @@ int digit_count(int x) {
 void print_node(Node *node, int d) {
     if (!node)
         printf("%*c", d, 'n');
+    else if (node->color == 'r')
+        printf("\033[31m%*ld\033[0m", d, static_cast<long>(node->inf));
     else
-        printf("%*d", d, node->inf);
+        printf("%*ld", d, static_cast<long>(node->inf));
 }
 
 // Function for tree output

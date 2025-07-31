@@ -6,8 +6,9 @@
         int inf;
         Node *left, *right;
         Node *parent;
+        char color;
         Node (int value):
-        inf(value), left(nullptr), right(nullptr), parent(nullptr) {}
+        inf(value), left(nullptr), right(nullptr), parent(nullptr), color('r') {}
     };
 
     class Tree {
