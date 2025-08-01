@@ -4,7 +4,7 @@
 
 int main() {
     using std::cin;
-    Tree tr;
+    RBTree tr;
     printf("Number of nodes: ");
     int n, x;
     cin >> n;
