@@ -41,9 +41,9 @@ void RBTree::left_rotate(Node *p) {
     if (c->left)
         c->left->parent = p;
     c->parent = p->parent;
-    if (!c->parent) {
+    if (!c->parent)
         this->root = c;
-    } else if (p == p->parent->left)
+    else if (p == p->parent->left)
         p->parent->left = c;
     else
         p->parent->right = c;
@@ -59,9 +59,9 @@ void RBTree::right_rotate(Node *p) {
     if (c->right)
         c->right->parent = p;
     c->parent = p->parent;
-    if (!c->parent) {
+    if (!c->parent)
         this->root = c;
-    } else if (p == p->parent->right)
+    else if (p == p->parent->right)
         p->parent->right = c;
     else
         p->parent->left = c;
@@ -119,24 +119,20 @@ void RBTree::insert_fixup(Node *node) {
         }
         else { // Uncle is black
             Node *g = p->parent;
-            if (node == p->left) {
-                if (p == g->left)
-                    this->right_rotate(g);
-                else {
-                    this->right_rotate(p);
-                    p = p->parent;
-                    g = p->parent;
-                    this->left_rotate(g);
-                }
-            } else {
-                if (p == g->right)
-                    this->left_rotate(g);
-                else {
+            if (p == g->left) {
+                if (node == p->right) {
                     this->left_rotate(p);
                     p = p->parent;
                     g = p->parent;
-                    this->right_rotate(g);
                 }
+                this->right_rotate(g);
+            } else {
+                if (node == p->left) {
+                    this->right_rotate(p);
+                    p = p->parent;
+                    g = p->parent;
+                }
+                this->left_rotate(g);
             }
             std::swap(g->color, p->color);
         }
@@ -152,8 +148,8 @@ void RBTree::erase(int value) {
 
 // Erases the node `node` from tree and calls the fixup function
 void RBTree::erase_node(Node* node) {
-    Node *p = node->parent;
     if (!node->left && !node->right) { // No children
+        Node *p = node->parent;
         if (!p) // Root
             this->root = nullptr;
         else {
@@ -167,16 +163,8 @@ void RBTree::erase_node(Node* node) {
     }
     if (!node->left || !node->right) { // 1 child
         Node *child = node->left ? node->left : node->right;
-        if (!p) { // Root
-            this->root = child;
-        } else {
-            if (p->left == node)
-                p->left = child;
-            else
-                p->right = child;
-        }
-        child->parent = p;
-        delete node;
+        std::swap(child->inf, node->inf);
+        this->erase_node(child);
         return;
     }
     // 2 childer
@@ -184,6 +172,8 @@ void RBTree::erase_node(Node* node) {
     std::swap(succ->inf, node->inf);
     this->erase_node(succ);
 }
+
+
 
 // Returns a pointer to a node in the subtree `node` with the value `value`
 Node* RBTree::find(Node *node, int value) {

@@ -16,9 +16,9 @@ int main() {
         }
     }
     
-    tr.print();
     char c;
     while (true) {
+        tr.print(true);
         printf("1. Insert\n2. Erase\n3. Quit\n> ");
         cin >> c;
         switch (c) {
@@ -26,14 +26,12 @@ int main() {
                 printf("Node to insert: ");
                 cin >> x;
                 tr.insert(x);
-                tr.print();
                 break;
             }
             case '2': {
                 printf("Node to erase: ");
                 cin >> x;
                 tr.erase(x);
-                tr.print();
                 break;
             }
             case '3': return 0;
