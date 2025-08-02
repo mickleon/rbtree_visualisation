@@ -4,35 +4,6 @@
 
 #include "rbtree.h"
 
-// Returns the grandparent of `this`
-Node *Node::grandparent() {
-    if (!this || !this->parent)
-        return nullptr;
-    return this->parent->parent;
-}
-
-// Returns the uncle of `this`
-Node *Node::uncle() {
-    Node *g = this->grandparent();
-    if (!g)
-        return nullptr;
-    if (this->parent == g->left)
-        return g->right;
-    else
-        return g->left;
-}
-
-// Returns the sibling of `this`
-Node *Node::sibling() {
-    if (this && this->parent) {
-        if (this == this->parent->left)
-            return this->parent->right;
-        else
-            return this->parent->left;
-    }
-    return nullptr;
-}
-
 // Rotates the tree to the left around the node `p`
 void RBTree::left_rotate(Node *p) {
     if (!p || !p->right) return;

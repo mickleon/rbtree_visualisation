@@ -9,9 +9,6 @@
         char color;
         Node (int value):
         inf(value), left(nullptr), right(nullptr), parent(nullptr), color('r') {}
-        Node *grandparent();
-        Node *uncle();
-        Node *sibling();
     };
 
     class RBTree {
