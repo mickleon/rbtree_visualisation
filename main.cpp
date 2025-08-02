@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "tree.h"
+#include "rbtree.h"
 
 int main() {
     using std::cin;

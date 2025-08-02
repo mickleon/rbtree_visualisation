@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-#include "tree.h"
+#include "rbtree.h"
 
 // Returns the grandparent of `this`
 Node *Node::grandparent() {
