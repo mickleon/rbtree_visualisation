@@ -104,39 +104,51 @@ void RBTree::insert(int value) {
 }
 
 // Auxullary function for `insert`, it does a fixup of a tree
-// Expected node `node` is not a root
 void RBTree::insert_fixup(Node *node) {
-    Node *p = node->parent;
-    if (p->color == 'r') { // Parent is red
-        Node *u = p->sibling();
-        if (u && u->color == 'r') { // Uncle is red
-            p->color = u->color = 'b';
-            Node *g = p->parent;
-            if (g->parent) {
+    while (node->parent && node->parent->color == 'r') {
+        Node *g = node->parent->parent;
+        if (node->parent == g->left) {
+            Node *u = g->right;
+            if (u && u->color == 'r') { // Uncle is red
+                node->parent->color = 'b';
+                u->color = 'b';
                 g->color = 'r';
-                this->insert_fixup(g);
-            }
-        }
-        else { // Uncle is black
-            Node *g = p->parent;
-            if (p == g->left) {
-                if (node == p->right) {
-                    this->left_rotate(p);
-                    p = p->parent;
-                    g = p->parent;
+                node = g;
+            } else { // Uncle is black
+                if (node == node->parent->right) { // Node is left child
+                    node = node->parent;
+                    this->left_rotate(node);
+                    g = node->parent->parent;
                 }
+                // Node is right child
+                node->parent->color = 'b';
+                g->color = 'r';
                 this->right_rotate(g);
-            } else {
-                if (node == p->left) {
-                    this->right_rotate(p);
-                    p = p->parent;
-                    g = p->parent;
-                }
-                this->left_rotate(g);
+                break;
             }
-            std::swap(g->color, p->color);
+        } else { // Symmetricall case
+            Node *u = g->left;
+            if (u && u->color == 'r') { // Uncle is red
+                node->parent->color = 'b';
+                u->color = 'b';
+                g->color = 'r';
+                node = g;
+            }
+            else { // Uncle is black
+                if (node == node->parent->left) { // Node is left child
+                    node = node->parent;
+                    this->right_rotate(node);
+                    g = node->parent->parent;
+                }
+                // Node is right child
+                node->parent->color = 'b';
+                g->color = 'r';
+                this->left_rotate(g);
+                break;
+            }
         }
     }
+    this->root->color = 'b';
 }
 
 // Erases the node with value `value` from tree and calls the fixup function
@@ -149,15 +161,14 @@ void RBTree::erase(int value) {
 // Erases the node `node` from tree and calls the fixup function
 void RBTree::erase_node(Node *node) {
     if (!node->left && !node->right) { // No children
-        Node *p = node->parent;
-        if (!p) // Root
+        if (!node->parent) // Root
             this->root = nullptr;
         else {
             this->erase_fixup(node);
-            if (p->left == node)
-                p->left = nullptr;
+            if (node->parent->left == node)
+                node->parent->left = nullptr;
             else
-                p->right = nullptr;
+                node->parent->right = nullptr;
         }
         delete node;
         return;
@@ -174,59 +185,61 @@ void RBTree::erase_node(Node *node) {
 // Auxullary function for `erase`, it does a fixup of a tree
 void RBTree::erase_fixup(Node *node) {
     while (node->parent && node->color == 'b') {
-        Node *p = node->parent;
-        if (node == p->left) {
-            Node *s = p->right;
-            if (s && s->color == 'r') {
+        if (node == node->parent->left) {
+            Node *s = node->parent->right;
+            if (s && s->color == 'r') { // Sibling is red
                 s->color = 'b';
-                p->color = 'r';
-                this->left_rotate(p);
-                p = node->parent;
+                node->parent->color = 'r';
+                this->left_rotate(node->parent);
                 s = node->parent->right;
             } 
-            if (s && (s->left && s->left->color == 'b' || !s->left) && 
-            (s->right && s->right->color == 'b' || !s->right)) {
+            if ((!s->left || s->left->color == 'b') && 
+            (!s->right || s->right->color == 'b')) { // Sibling and his children is black
                 s->color = 'r';
                 node = node->parent;
-            } else {
-                if (s && (s->right && s->right->color == 'b' || !s->right)) {
-                    s->left->color = 'b';
+            } else { // Sibling is black, his left child is red, right is black
+                if ((!s->right || s->right->color == 'b')) {
+                    if (s->left)
+                        s->left->color = 'b';
                     s->color = 'r';
                     this->right_rotate(s);
                     s = node->parent->right;
-                    p = node->parent;
                 }
-                s->color = p->color;
-                p->color = 'b';
-                s->right->color = 'b';
-                this->left_rotate(p);
+                // Sibling is black, his right child is red
+                s->color = node->parent->color;
+                node->parent->color = 'b';
+                if (s->right)
+                    s->right->color = 'b';
+                this->left_rotate(node->parent);
                 node = this->root;
             }
-        } else {
-            Node *s = p->left;
-            if (s && s->color == 'r') {
+        } else { // Symmetrical case
+            Node *s = node->parent->left;
+            if (s && s->color == 'r') { // Sibling is red
                 s->color = 'b';
-                p->color = 'r';
-                this->right_rotate(p);
-                p = node->parent;
+                node->parent->color = 'r';
+                this->right_rotate(node->parent);
                 s = node->parent->left;
             } 
-            if (s && (s->left && s->left->color == 'b' || !s->left) && 
-            (s->right && s->right->color == 'b' || !s->right)) {
+            if ((!s->left || s->left->color == 'b') && 
+            (!s->right || s->right->color == 'b')) { // Sibling and his children is black
                 s->color = 'r';
                 node = node->parent;
-            } else {
-                if (s && (s->left && s->left->color == 'b' || !s->left)) {
-                    s->right->color = 'b';
+            } else { // Sibling is black, his right child is red, left is black
+                if ((!s->left || s->left->color == 'b')) {
+                    if (s->right)
+                        s->right->color = 'b';
                     s->color = 'r';
                     this->left_rotate(s);
                     s = node->parent->left;
-                    p = node->parent;
+                    node->parent = node->parent;
                 }
-                s->color = p->color;
-                p->color = 'b';
-                s->left->color = 'b';
-                this->right_rotate(p);
+                // Sibling is black, his left child is red
+                s->color = node->parent->color;
+                node->parent->color = 'b';
+                if (s->left)
+                    s->left->color = 'b';
+                this->right_rotate(node->parent);
                 node = this->root;
             }
         }
