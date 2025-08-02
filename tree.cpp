@@ -5,15 +5,15 @@
 #include "tree.h"
 
 // Returns the grandparent of `this`
-Node* Node::grandparent() {
+Node *Node::grandparent() {
     if (!this || !this->parent)
         return nullptr;
     return this->parent->parent;
 }
 
 // Returns the uncle of `this`
-Node* Node::uncle() {
-    Node* g = this->grandparent();
+Node *Node::uncle() {
+    Node *g = this->grandparent();
     if (!g)
         return nullptr;
     if (this->parent == g->left)
@@ -23,7 +23,7 @@ Node* Node::uncle() {
 }
 
 // Returns the sibling of `this`
-Node* Node::sibling() {
+Node *Node::sibling() {
     if (this && this->parent) {
         if (this == this->parent->left)
             return this->parent->right;
@@ -36,7 +36,7 @@ Node* Node::sibling() {
 // Rotates the tree to the left around the node `p`
 void RBTree::left_rotate(Node *p) {
     if (!p || !p->right) return;
-    Node* c = p->right;       
+    Node *c = p->right;       
     p->right = c->left;
     if (c->left)
         c->left->parent = p;
@@ -71,13 +71,13 @@ void RBTree::right_rotate(Node *p) {
 
 // Inserts node with value `value` to a tree and calls the fixup function
 void RBTree::insert(int value) {
-    Node* node = new Node(value);
+    Node *node = new Node(value);
     if (!this->root) {
         node->color = 'b';
         this->root = node;
         return;
     }
-    Node* temp = this->root;
+    Node *temp = this->root;
     while (temp) {
         if (node->inf > temp->inf) {
             if (temp->right)
@@ -147,7 +147,7 @@ void RBTree::erase(int value) {
 }
 
 // Erases the node `node` from tree and calls the fixup function
-void RBTree::erase_node(Node* node) {
+void RBTree::erase_node(Node *node) {
     if (!node->left && !node->right) { // No children
         Node *p = node->parent;
         if (!p) // Root
@@ -162,23 +162,21 @@ void RBTree::erase_node(Node* node) {
         delete node;
         return;
     }
-    if (!node->left || !node->right) { // 1 child
-        Node *child = node->left ? node->left : node->right;
-        std::swap(child->inf, node->inf);
-        this->erase_node(child);
-        return;
-    }
-    // 2 childer
-    Node *succ = this->min(node->right);
+    Node *succ;
+    if (!node->left || !node->right) // 1 child
+        succ = node->left ? node->left : node->right;
+    else // 2 childer
+        succ = this->min(node->right);
     std::swap(succ->inf, node->inf);
     this->erase_node(succ);
 }
 
+// Auxullary function for `erase`, it does a fixup of a tree
 void RBTree::erase_fixup(Node *node) {
     while (node->parent && node->color == 'b') {
         Node *p = node->parent;
         if (node == p->left) {
-            Node* s = p->right;
+            Node *s = p->right;
             if (s && s->color == 'r') {
                 s->color = 'b';
                 p->color = 'r';
@@ -186,7 +184,8 @@ void RBTree::erase_fixup(Node *node) {
                 p = node->parent;
                 s = node->parent->right;
             } 
-            if (s && (s->left && s->left->color == 'b' || !s->left) && (s->right && s->right->color == 'b' || !s->right)) {
+            if (s && (s->left && s->left->color == 'b' || !s->left) && 
+            (s->right && s->right->color == 'b' || !s->right)) {
                 s->color = 'r';
                 node = node->parent;
             } else {
@@ -204,7 +203,7 @@ void RBTree::erase_fixup(Node *node) {
                 node = this->root;
             }
         } else {
-            Node* s = p->left;
+            Node *s = p->left;
             if (s && s->color == 'r') {
                 s->color = 'b';
                 p->color = 'r';
@@ -212,7 +211,8 @@ void RBTree::erase_fixup(Node *node) {
                 p = node->parent;
                 s = node->parent->left;
             } 
-            if (s && (s->left && s->left->color == 'b' || !s->left) && (s->right && s->right->color == 'b' || !s->right)) {
+            if (s && (s->left && s->left->color == 'b' || !s->left) && 
+            (s->right && s->right->color == 'b' || !s->right)) {
                 s->color = 'r';
                 node = node->parent;
             } else {
@@ -235,7 +235,7 @@ void RBTree::erase_fixup(Node *node) {
 }
 
 // Returns a pointer to a node in the subtree `node` with the value `value`
-Node* RBTree::find(Node *node, int value) {
+Node *RBTree::find(Node *node, int value) {
     if (!node || node->inf == value)
         return node;
     if (value < node->inf)
@@ -244,41 +244,41 @@ Node* RBTree::find(Node *node, int value) {
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node* RBTree::find(int value) {
+Node *RBTree::find(int value) {
     return this->find(this->root, value);
 }
 
 // Returns a pointer to a node in the subtree `node` with the maximal value
-Node* RBTree::max(Node *node) {
+Node *RBTree::max(Node *node) {
     if (!node)
         return nullptr;
-    Node* y = node;
+    Node *y = node;
     while (y->right)
         y = y->right;
     return y;
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node* RBTree::max() {
+Node *RBTree::max() {
     return this->max(this->root);
 }
 
 // Returns a pointer to a node in the subtree `node` with the minimal value
-Node* RBTree::min(Node *node) {
+Node *RBTree::min(Node *node) {
     if (!node)
         return nullptr;
-    Node* y = node;
+    Node *y = node;
     while (y->left)
         y = y->left;
     return y;
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node* RBTree::min() {
+Node *RBTree::min() {
     return this->min(this->root);
 }
 
-int RBTree::height(Node* node) {
+int RBTree::height(Node *node) {
     if (!node)
         return 0;
     return 1 + std::max(this->height(node->left),
@@ -373,7 +373,7 @@ void RBTree::print(bool show_null_leaves){
 }
 
 // Erases all the nodes from the subtree `node`
-void RBTree::clear(Node* node) {
+void RBTree::clear(Node *node) {
     if (node) {
         this->clear(node->left);
         this->clear(node->right);

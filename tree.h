@@ -9,9 +9,9 @@
         char color;
         Node (int value):
         inf(value), left(nullptr), right(nullptr), parent(nullptr), color('r') {}
-        Node* grandparent();
-        Node* uncle();
-        Node* sibling();
+        Node *grandparent();
+        Node *uncle();
+        Node *sibling();
     };
 
     class RBTree {
@@ -20,18 +20,18 @@
         ~RBTree() {clear(root);}
         void insert(int value);
         void erase(int value);
-        Node* find(Node *node, int value);
-        Node* find(int value);
-        Node* max(Node *node);
-        Node* max();
-        Node* min(Node *node);
-        Node* min();
+        Node *find(Node *node, int value);
+        Node *find(int value);
+        Node *max(Node *node);
+        Node *max();
+        Node *min(Node *node);
+        Node *min();
         void print(bool show_null_leaves = false);
         void clear(Node* node);
         void clear();
     private:
         std::vector<std::vector<std::pair<Node*, int>>> array;
-        Node* root;
+        Node *root;
         void right_rotate(Node *p);
         void left_rotate(Node *p);
         void insert_fixup(Node *node);
