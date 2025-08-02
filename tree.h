@@ -36,6 +36,7 @@
         void left_rotate(Node *p);
         void insert_fixup(Node *node);
         void erase_node(Node *node);
+        void erase_fixup(Node *p);
         int height(Node *node);
         int height();
         void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);

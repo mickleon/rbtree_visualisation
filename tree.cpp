@@ -153,6 +153,7 @@ void RBTree::erase_node(Node* node) {
         if (!p) // Root
             this->root = nullptr;
         else {
+            this->erase_fixup(node);
             if (p->left == node)
                 p->left = nullptr;
             else
@@ -173,7 +174,65 @@ void RBTree::erase_node(Node* node) {
     this->erase_node(succ);
 }
 
-
+void RBTree::erase_fixup(Node *node) {
+    while (node->parent && node->color == 'b') {
+        Node *p = node->parent;
+        if (node == p->left) {
+            Node* s = p->right;
+            if (s && s->color == 'r') {
+                s->color = 'b';
+                p->color = 'r';
+                this->left_rotate(p);
+                p = node->parent;
+                s = node->parent->right;
+            } 
+            if (s && (s->left && s->left->color == 'b' || !s->left) && (s->right && s->right->color == 'b' || !s->right)) {
+                s->color = 'r';
+                node = node->parent;
+            } else {
+                if (s && (s->right && s->right->color == 'b' || !s->right)) {
+                    s->left->color = 'b';
+                    s->color = 'r';
+                    this->right_rotate(s);
+                    s = node->parent->right;
+                    p = node->parent;
+                }
+                s->color = p->color;
+                p->color = 'b';
+                s->right->color = 'b';
+                this->left_rotate(p);
+                node = this->root;
+            }
+        } else {
+            Node* s = p->left;
+            if (s && s->color == 'r') {
+                s->color = 'b';
+                p->color = 'r';
+                this->right_rotate(p);
+                p = node->parent;
+                s = node->parent->left;
+            } 
+            if (s && (s->left && s->left->color == 'b' || !s->left) && (s->right && s->right->color == 'b' || !s->right)) {
+                s->color = 'r';
+                node = node->parent;
+            } else {
+                if (s && (s->left && s->left->color == 'b' || !s->left)) {
+                    s->right->color = 'b';
+                    s->color = 'r';
+                    this->left_rotate(s);
+                    s = node->parent->left;
+                    p = node->parent;
+                }
+                s->color = p->color;
+                p->color = 'b';
+                s->left->color = 'b';
+                this->right_rotate(p);
+                node = this->root;
+            }
+        }
+    }
+    node->color = 'b';
+}
 
 // Returns a pointer to a node in the subtree `node` with the value `value`
 Node* RBTree::find(Node *node, int value) {
