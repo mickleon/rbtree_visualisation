@@ -18,7 +18,7 @@ int main() {
     
     char c;
     while (true) {
-        tr.print(true);
+        tr.print();
         printf("1. Insert\n2. Erase\n3. Quit\n> ");
         cin >> c;
         switch (c) {

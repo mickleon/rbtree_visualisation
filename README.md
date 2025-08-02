@@ -18,15 +18,11 @@ The following functions are available for working with tree:
 
 - `void Tree::insert(int value)`: inserts node with value `value` to a tree and calls the fixup function.
 - `void Tree::erase(Node *node)`: erases the node with value `value` from tree and calls the fixup function.
-- `Node* Tree::find(Node *node, int value)`: returns a pointer to a node in the subtree `node` with the value `value`.
-- `Node* Tree::find(int value)`: overload of previous function, where `node` is a tree root `Tree::root`.
-- `Node* Tree::max(Node *node)`: returns a pointer to a node in the subtree `node` with the maximal value.
-- `Node* Tree::max()`: overload of previous function, where `node` is a tree root `Tree::root`.
-- `Node* Tree::min(Node *node)`: returns a pointer to a node in the subtree `node` with the minimal value.
-- `Node* Tree::min()`: overload of previous function, where `node` is a tree root `Tree::root`.
+- `Node* Tree::find(int value)`: returns a pointer to a node in the tree with the value `value`.
+- `Node* Tree::max()`: returns a pointer to a node in the tree with the maximal value.
+- `Node* Tree::min()`: returns a pointer to a node in the tree with the minimal value.
 - `void Tree::print(bool show_null_leaves = false)`: outputs the tree to the console. It has optional parameter `show_null_leaves` that is false by default, responsible for displaying null leaves.
-- `void clear(Node* node)`: erases all the nodes from the subtree `node`.
-- `void clear()` overload of previous function, where `node` is a tree root `Tree::root`.
+- `void clear()`: erases all the nodes from the tree.
 
 # Example of output
 

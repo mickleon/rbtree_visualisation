@@ -17,17 +17,13 @@
     class RBTree {
     public:
         RBTree(): root(nullptr) {};
-        ~RBTree() {clear(root);}
+        ~RBTree() {clear(this->root);}
         void insert(int value);
         void erase(int value);
-        Node *find(Node *node, int value);
         Node *find(int value);
-        Node *max(Node *node);
         Node *max();
-        Node *min(Node *node);
         Node *min();
         void print(bool show_null_leaves = false);
-        void clear(Node* node);
         void clear();
     private:
         std::vector<std::vector<std::pair<Node*, int>>> array;
@@ -37,6 +33,10 @@
         void insert_fixup(Node *node);
         void erase_node(Node *node);
         void erase_fixup(Node *p);
+        Node *find(Node *node, int value);
+        Node *max(Node *node);
+        Node *min(Node *node);
+        void clear(Node* node);
         int height(Node *node);
         int height();
         void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);
