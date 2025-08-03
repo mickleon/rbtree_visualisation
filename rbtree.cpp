@@ -42,34 +42,26 @@ void RBTree::right_rotate(Node *p) {
 
 // Inserts node with value `value` to a tree and calls the fixup function
 void RBTree::insert(int value) {
-    Node *node = new Node(value);
-    if (!this->root) {
-        node->color = 'b';
-        this->root = node;
-        return;
-    }
     Node *temp = this->root;
     while (temp) {
-        if (node->inf > temp->inf) {
-            if (temp->right)
-                temp = temp->right;
-            else {
-                temp->right = node;
-                node->parent = temp;
-                break;
-            }
-        } else if (node->inf < temp->inf) {
-            if (temp->left)
-                temp = temp->left;
-            else {
-                temp->left = node;
-                node->parent = temp;
-                break;
-            }
-        } else {
-            delete node;
+        if (value < temp->inf && temp->left)
+            temp = temp->left;
+        else if (value > temp->inf && temp->right)
+            temp = temp->right;
+        else if (value != temp->inf)
+            break;
+        else
             return;
-        }
+    }
+    Node *node = new Node(value);
+    if (!temp)
+        this->root = node;
+    else {
+        node->parent = temp;
+        if (value < temp->inf)
+            temp->left = node;
+        else
+            temp->right = node;
     }
     this->insert_fixup(node);
 }
@@ -131,26 +123,28 @@ void RBTree::erase(int value) {
 
 // Erases the node `node` from tree and calls the fixup function
 void RBTree::erase_node(Node *node) {
-    if (!node->left && !node->right) { // No children
-        if (!node->parent) // Root
-            this->root = nullptr;
-        else {
-            this->erase_fixup(node);
-            if (node->parent->left == node)
-                node->parent->left = nullptr;
-            else
-                node->parent->right = nullptr;
-        }
-        delete node;
-        return;
+    if (node->left || node->right) { // If `node` has children ...
+        Node* temp;
+        if (!node->left)
+            temp = node->right;    
+        else if (!node->right)
+            temp = node->left;
+        else
+            temp = this->min(node->right);
+        node->inf = temp->inf;
+        node = temp; // ... redefine `node` as his childless descendant
     }
-    Node *succ;
-    if (!node->left || !node->right) // 1 child
-        succ = node->left ? node->left : node->right;
-    else // 2 childer
-        succ = this->min(node->right);
-    std::swap(succ->inf, node->inf);
-    this->erase_node(succ);
+    if (!node->parent) // Root
+        this->root = nullptr;
+    else {
+        if (node->color == 'b')
+            this->erase_fixup(node);
+        if (node->parent->left == node)
+            node->parent->left = nullptr;
+        else
+            node->parent->right = nullptr;
+    }
+    delete node;
 }
 
 // Auxullary function for `erase`, it does a fixup of a tree
