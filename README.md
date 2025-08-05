@@ -9,7 +9,7 @@ This is a training example of a red/black tree. This may be necessary for those 
 # Run
 
 ```bash
-g++ main.cpp tree.cpp -o main && ./main
+g++ main.cpp rbtree.cpp -o main && ./main
 ```
 
 # User API
