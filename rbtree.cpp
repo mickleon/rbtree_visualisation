@@ -6,13 +6,13 @@
 
 // Rotates the tree to the left around the node `p`
 void RBTree::left_rotate(Node *p) {
-    if (!p || !p->right) return;
+    if (p == nullptr || p->right == nullptr) return;
     Node *c = p->right;       
     p->right = c->left;
-    if (c->left)
+    if (c->left != nullptr)
         c->left->parent = p;
     c->parent = p->parent;
-    if (!c->parent)
+    if (c->parent == nullptr)
         this->root = c;
     else if (p == p->parent->left)
         p->parent->left = c;
@@ -24,13 +24,13 @@ void RBTree::left_rotate(Node *p) {
 
 // Rotates the tree to the right around the node `p`
 void RBTree::right_rotate(Node *p) {
-    if (!p || !p->left) return;
+    if (p == nullptr || p->left == nullptr) return;
     Node *c = p->left;
     p->left = c->right;
-    if (c->right)
+    if (c->right != nullptr)
         c->right->parent = p;
     c->parent = p->parent;
-    if (!c->parent)
+    if (c->parent == nullptr)
         this->root = c;
     else if (p == p->parent->right)
         p->parent->right = c;
@@ -43,10 +43,10 @@ void RBTree::right_rotate(Node *p) {
 // Inserts node with value `value` to a tree and calls the fixup function
 void RBTree::insert(int value) {
     Node *temp = this->root;
-    while (temp) {
-        if (value < temp->inf && temp->left)
+    while (temp != nullptr) {
+        if (value < temp->inf && temp->left != nullptr)
             temp = temp->left;
-        else if (value > temp->inf && temp->right)
+        else if (value > temp->inf && temp->right != nullptr)
             temp = temp->right;
         else if (value != temp->inf)
             break;
@@ -54,7 +54,7 @@ void RBTree::insert(int value) {
             return;
     }
     Node *node = new Node(value);
-    if (!temp)
+    if (temp == nullptr)
         this->root = node;
     else {
         node->parent = temp;
@@ -68,11 +68,11 @@ void RBTree::insert(int value) {
 
 // Auxullary function for `insert`, it does a fixup of a tree
 void RBTree::insert_fixup(Node *node) {
-    while (node->parent && node->parent->color == 'r') {
+    while (node->parent != nullptr && node->parent->color == 'r') {
         Node *g = node->parent->parent;
         if (node->parent == g->left) {
             Node *u = g->right;
-            if (u && u->color == 'r') { // Uncle is red
+            if (u != nullptr && u->color == 'r') { // Uncle is red
                 node->parent->color = 'b';
                 u->color = 'b';
                 g->color = 'r';
@@ -91,7 +91,7 @@ void RBTree::insert_fixup(Node *node) {
             }
         } else { // Symmetricall case
             Node *u = g->left;
-            if (u && u->color == 'r') { // Uncle is red
+            if (u != nullptr && u->color == 'r') { // Uncle is red
                 node->parent->color = 'b';
                 u->color = 'b';
                 g->color = 'r';
@@ -117,24 +117,24 @@ void RBTree::insert_fixup(Node *node) {
 // Erases the node with value `value` from tree and calls the fixup function
 void RBTree::erase(int value) {
     Node *node = this->find(value);
-    if (node)
+    if (node != nullptr)
         this->erase_node(node);
 }
 
 // Erases the node `node` from tree and calls the fixup function
 void RBTree::erase_node(Node *node) {
-    if (node->left || node->right) { // If `node` has children ...
+    if (node->left != nullptr || node->right != nullptr) { // If `node` has children ...
         Node* temp;
-        if (!node->left)
+        if (node->left == nullptr)
             temp = node->right;    
-        else if (!node->right)
+        else if (node->right == nullptr)
             temp = node->left;
         else
             temp = this->min(node->right);
         node->inf = temp->inf;
         node = temp; // ... redefine `node` as his childless descendant
     }
-    if (!node->parent) // Root
+    if (node->parent == nullptr) // Root
         this->root = nullptr;
     else {
         if (node->color == 'b')
@@ -149,22 +149,22 @@ void RBTree::erase_node(Node *node) {
 
 // Auxullary function for `erase`, it does a fixup of a tree
 void RBTree::erase_fixup(Node *node) {
-    while (node->parent && node->color == 'b') {
+    while (node->parent != nullptr && node->color == 'b') {
         if (node == node->parent->left) {
             Node *s = node->parent->right;
-            if (s && s->color == 'r') { // Sibling is red
+            if (s != nullptr && s->color == 'r') { // Sibling is red
                 s->color = 'b';
                 node->parent->color = 'r';
                 this->left_rotate(node->parent);
                 s = node->parent->right;
             } 
-            if ((!s->left || s->left->color == 'b') && 
-            (!s->right || s->right->color == 'b')) { // Sibling and his children is black
+            if ((s->left == nullptr || s->left->color == 'b') && 
+            (s->right == nullptr || s->right->color == 'b')) { // Sibling and his children is black
                 s->color = 'r';
                 node = node->parent;
             } else { // Sibling is black, his left child is red, right is black
-                if ((!s->right || s->right->color == 'b')) {
-                    if (s->left)
+                if ((s->right == nullptr || s->right->color == 'b')) {
+                    if (s->left != nullptr)
                         s->left->color = 'b';
                     s->color = 'r';
                     this->right_rotate(s);
@@ -173,26 +173,26 @@ void RBTree::erase_fixup(Node *node) {
                 // Sibling is black, his right child is red
                 s->color = node->parent->color;
                 node->parent->color = 'b';
-                if (s->right)
+                if (s->right != nullptr)
                     s->right->color = 'b';
                 this->left_rotate(node->parent);
                 node = this->root;
             }
         } else { // Symmetrical case
             Node *s = node->parent->left;
-            if (s && s->color == 'r') { // Sibling is red
+            if (s != nullptr && s->color == 'r') { // Sibling is red
                 s->color = 'b';
                 node->parent->color = 'r';
                 this->right_rotate(node->parent);
                 s = node->parent->left;
             } 
-            if ((!s->left || s->left->color == 'b') && 
-            (!s->right || s->right->color == 'b')) { // Sibling and his children is black
+            if ((s->left == nullptr || s->left->color == 'b') && 
+            (s->right == nullptr || s->right->color == 'b')) { // Sibling and his children is black
                 s->color = 'r';
                 node = node->parent;
             } else { // Sibling is black, his right child is red, left is black
-                if ((!s->left || s->left->color == 'b')) {
-                    if (s->right)
+                if ((s->left == nullptr || s->left->color == 'b')) {
+                    if (s->right != nullptr)
                         s->right->color = 'b';
                     s->color = 'r';
                     this->left_rotate(s);
@@ -202,7 +202,7 @@ void RBTree::erase_fixup(Node *node) {
                 // Sibling is black, his left child is red
                 s->color = node->parent->color;
                 node->parent->color = 'b';
-                if (s->left)
+                if (s->left != nullptr)
                     s->left->color = 'b';
                 this->right_rotate(node->parent);
                 node = this->root;
@@ -214,7 +214,7 @@ void RBTree::erase_fixup(Node *node) {
 
 // Returns a pointer to a node in the subtree `node` with the value `value`
 Node *RBTree::find(Node *node, int value) {
-    if (!node || node->inf == value)
+    if (node == nullptr || node->inf == value)
         return node;
     if (value < node->inf)
         return this->find(node->left, value);
@@ -228,10 +228,10 @@ Node *RBTree::find(int value) {
 
 // Returns a pointer to a node in the subtree `node` with the maximal value
 Node *RBTree::max(Node *node) {
-    if (!node)
+    if (node == nullptr)
         return nullptr;
     Node *y = node;
-    while (y->right)
+    while (y->right != nullptr)
         y = y->right;
     return y;
 }
@@ -243,10 +243,10 @@ Node *RBTree::max() {
 
 // Returns a pointer to a node in the subtree `node` with the minimal value
 Node *RBTree::min(Node *node) {
-    if (!node)
+    if (node == nullptr)
         return nullptr;
     Node *y = node;
-    while (y->left)
+    while (y->left != nullptr)
         y = y->left;
     return y;
 }
@@ -257,7 +257,7 @@ Node *RBTree::min() {
 }
 
 int RBTree::height(Node *node) {
-    if (!node)
+    if (node == nullptr)
         return 0;
     return 1 + std::max(this->height(node->left),
         this->height(node->right));
@@ -271,14 +271,14 @@ int RBTree::height() {
 // Traversal with depth calculation and node offset from the left edge of the level
 void RBTree::make_array(Node *node, bool show_null_leaves, int depth, int count) {
     this->array[depth].push_back({node, count - (1 << depth)});
-    if (node->left) 
+    if (node->left != nullptr) 
         this->make_array(node->left, show_null_leaves, depth + 1, count*2);
-    else if (show_null_leaves)
+    else if (show_null_leaves == true)
         this->array[depth + 1]
             .push_back({nullptr, count*2 - (1 << depth+1)});
-    if (node->right) 
+    if (node->right != nullptr) 
         this->make_array(node->right, show_null_leaves, depth + 1, count*2 + 1);
-    else if (show_null_leaves)
+    else if (show_null_leaves == true)
         this->array[depth + 1]
             .push_back({nullptr, (count*2 + 1) - (1 << depth+1)});        
 }
@@ -295,7 +295,7 @@ int digit_count(int x) {
 
 // Auxulary function for the `print`, it outputs one node `node`, fills up to `d` characters with spaces
 void print_node(Node *node, int d) {
-    if (!node)
+    if (node == nullptr)
         printf("%*c", d, 'n');
     else if (node->color == 'r')
         printf("\033[31m%*ld\033[0m", d, static_cast<long>(node->inf));
@@ -318,7 +318,7 @@ void RBTree::print(bool show_null_leaves){
         return;
     }
     int height = this->height();
-    if (show_null_leaves)
+    if (show_null_leaves == true)
         height++;
     this->array.assign(height, {});
     this->make_array(this->root, show_null_leaves);
@@ -352,7 +352,7 @@ void RBTree::print(bool show_null_leaves){
 
 // Erases all the nodes from the subtree `node`
 void RBTree::clear(Node *node) {
-    if (node) {
+    if (node != nullptr) {
         this->clear(node->left);
         this->clear(node->right);
         delete node;
