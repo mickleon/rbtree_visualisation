@@ -3,13 +3,13 @@
 #include "rbtree.h"
 
 int main() {
-    using std::cin;
+    using std::cin, std::cout;
     RBTree tr;
-    printf("Number of nodes: ");
+    cout << "Number of nodes: ";
     int n, x;
     cin >> n;
     if (n > 0) {
-        printf("Nodes: ");
+        cout << "Nodes: ";
         for (int i = 0; i < n; i++) {
             cin >> x;
             tr.insert(x);
@@ -19,17 +19,17 @@ int main() {
     char c;
     while (true) {
         tr.print();
-        printf("1. Insert\n2. Erase\n3. Quit\n> ");
+        cout << "1. Insert\n2. Erase\n3. Quit\n> ";
         cin >> c;
         switch (c) {
             case '1': {
-                printf("Node to insert: ");
+                cout << "Node to insert: ";
                 cin >> x;
                 tr.insert(x);
                 break;
             }
             case '2': {
-                printf("Node to erase: ");
+                cout << "Node to erase: ";
                 cin >> x;
                 tr.erase(x);
                 break;

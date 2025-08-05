@@ -314,7 +314,7 @@ void print_space(int n){
 // Function for tree output
 void RBTree::print(bool show_null_leaves){
     if (this->root == nullptr) {
-        printf("NULL TREE\n");
+        std::cout << "NULL TREE\n";
         return;
     }
     int height = this->height();
@@ -345,7 +345,7 @@ void RBTree::print(bool show_null_leaves){
             // Save offset for subsequent calculations
             prev_offset = node.second + 1;
         }
-        printf("\n");
+        std::cout << "\n";
         init_space /= 2;
     }
 }
