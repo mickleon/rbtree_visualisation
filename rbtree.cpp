@@ -298,9 +298,9 @@ void print_node(Node *node, int d) {
     if (node == nullptr)
         printf("%*c", d, 'n');
     else if (node->color == 'r')
-        printf("\033[31m%*ld\033[0m", d, static_cast<long>(node->inf));
+        printf("\033[31m%*d\033[0m", d, node->inf);
     else
-        printf("%*ld", d, static_cast<long>(node->inf));
+        printf("%*d", d, node->inf);
 }
 
 // Prints space n times
