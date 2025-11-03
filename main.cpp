@@ -15,29 +15,29 @@ int main() {
             tr.insert(x);
         }
     }
-    
+
     char c;
     while (true) {
         tr.print();
         cout << "1. Insert\n2. Erase\n3. Quit\n> ";
         cin >> c;
         switch (c) {
-            case '1': {
-                cout << "Node to insert: ";
-                cin >> x;
-                tr.insert(x);
-                break;
-            }
-            case '2': {
-                cout << "Node to erase: ";
-                cin >> x;
-                tr.erase(x);
-                break;
-            }
-            case '3': return 0;
-            case 'q': return 0;
-            case 'Q': return 0;
-            default: break;
+        case '1': {
+            cout << "Node to insert: ";
+            cin >> x;
+            tr.insert(x);
+            break;
+        }
+        case '2': {
+            cout << "Node to erase: ";
+            cin >> x;
+            tr.erase(x);
+            break;
+        }
+        case '3': return 0;
+        case 'q': return 0;
+        case 'Q': return 0;
+        default: break;
         }
     }
 }
