@@ -8,12 +8,7 @@ struct Node {
     Node *parent;
     char color;
 
-    Node(int value):
-        inf(value),
-        left(nullptr),
-        right(nullptr),
-        parent(nullptr),
-        color('r') {}
+    Node(int value): inf(value), left(nullptr), right(nullptr), parent(nullptr), color('r') {}
 };
 
 class RBTree {
@@ -44,8 +39,6 @@ private:
     void clear(Node *node);
     int height(Node *node);
     int height();
-    void make_array(
-        Node *node, bool show_null_leaves = false, int depth = 0, int count = 1
-    );
+    void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);
 };
 #endif

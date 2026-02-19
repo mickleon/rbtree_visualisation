@@ -9,11 +9,13 @@ void RBTree::left_rotate(Node *p) {
     if (p == nullptr || p->right == nullptr) {
         return;
     }
+
     Node *c = p->right;
     p->right = c->left;
     if (c->left != nullptr) {
         c->left->parent = p;
     }
+
     c->parent = p->parent;
     if (c->parent == nullptr) {
         this->root = c;
@@ -22,6 +24,7 @@ void RBTree::left_rotate(Node *p) {
     } else {
         p->parent->right = c;
     }
+
     c->left = p;
     p->parent = c;
 }
@@ -31,11 +34,13 @@ void RBTree::right_rotate(Node *p) {
     if (p == nullptr || p->left == nullptr) {
         return;
     }
+
     Node *c = p->left;
     p->left = c->right;
     if (c->right != nullptr) {
         c->right->parent = p;
     }
+
     c->parent = p->parent;
     if (c->parent == nullptr) {
         this->root = c;
@@ -44,6 +49,7 @@ void RBTree::right_rotate(Node *p) {
     } else {
         p->parent->left = c;
     }
+
     c->right = p;
     p->parent = c;
 }
@@ -62,6 +68,7 @@ void RBTree::insert(int value) {
             return;
         }
     }
+
     Node *node = new Node(value);
     if (temp == nullptr) {
         this->root = node;
@@ -133,8 +140,7 @@ void RBTree::erase(int value) {
 
 // Erases the node `node` from tree and calls the fixup function
 void RBTree::erase_node(Node *node) {
-    if (node->left != nullptr ||
-        node->right != nullptr) { // If `node` has children ...
+    if (node->left != nullptr || node->right != nullptr) { // If `node` has children ...
         Node *temp;
         if (node->left == nullptr) {
             temp = node->right;
@@ -146,6 +152,7 @@ void RBTree::erase_node(Node *node) {
         node->inf = temp->inf;
         node = temp; // ... redefine `node` as his childless descendant
     }
+
     if (node->parent == nullptr) { // Root
         this->root = nullptr;
     } else {
@@ -237,6 +244,7 @@ Node *RBTree::find(Node *node, int value) {
     if (node == nullptr || node->inf == value) {
         return node;
     }
+
     if (value < node->inf) {
         return this->find(node->left, value);
     }
@@ -253,6 +261,7 @@ Node *RBTree::max(Node *node) {
     if (node == nullptr) {
         return nullptr;
     }
+
     Node *y = node;
     while (y->right != nullptr) {
         y = y->right;
@@ -296,25 +305,19 @@ int RBTree::height() {
 
 // Traversal with depth calculation and node offset from the left edge of the
 // level
-void RBTree::make_array(
-    Node *node, bool show_null_leaves, int depth, int count
-) {
+void RBTree::make_array(Node *node, bool show_null_leaves, int depth, int count) {
     this->array[depth].push_back({node, count - (1 << depth)});
+
     if (node->left != nullptr) {
         this->make_array(node->left, show_null_leaves, depth + 1, count * 2);
     } else if (show_null_leaves == true) {
-        this->array[depth + 1].push_back(
-            {nullptr, count * 2 - (1 << (depth + 1))}
-        );
+        this->array[depth + 1].push_back({nullptr, count * 2 - (1 << (depth + 1))});
     }
+
     if (node->right != nullptr) {
-        this->make_array(
-            node->right, show_null_leaves, depth + 1, count * 2 + 1
-        );
+        this->make_array(node->right, show_null_leaves, depth + 1, count * 2 + 1);
     } else if (show_null_leaves == true) {
-        this->array[depth + 1].push_back(
-            {nullptr, (count * 2 + 1) - (1 << (depth + 1))}
-        );
+        this->array[depth + 1].push_back({nullptr, (count * 2 + 1) - (1 << (depth + 1))});
     }
 }
 
@@ -356,16 +359,17 @@ void RBTree::print(bool show_null_leaves) {
         std::cout << "NULL TREE\n";
         return;
     }
+
     int height = this->height();
     if (show_null_leaves == true) {
         height++;
     }
+
     this->array.assign(height, {});
     this->make_array(this->root, show_null_leaves);
 
     // Maximum number of digit of node in tree
-    int d =
-        std::max(digit_count(this->max()->inf), digit_count(this->min()->inf));
+    int d = std::max(digit_count(this->max()->inf), digit_count(this->min()->inf));
     // Space at the beginning of each level
     int init_space = height > 1 ? (d + 1) * (1 << (height - 2)) : 0;
     for (int depth = 0; depth < height; depth++) {
