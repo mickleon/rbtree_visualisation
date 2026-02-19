@@ -1,8 +1,11 @@
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <vector>
 
 #include "rbtree.h"
+
+using std::vector, std::cout, std::setw;
 
 // Rotates the tree to the left around the node `p`
 void RBTree::left_rotate(Node *p) {
@@ -305,19 +308,21 @@ int RBTree::height() {
 
 // Traversal with depth calculation and node offset from the left edge of the
 // level
-void RBTree::make_array(Node *node, bool show_null_leaves, int depth, int count) {
-    this->array[depth].push_back({node, count - (1 << depth)});
+void RBTree::make_array(
+    vector<vector<Node *>> &array, Node *node, bool show_null_leaves, int depth, int count
+) {
+    array[depth][count - (1 << depth)] = node;
 
     if (node->left != nullptr) {
-        this->make_array(node->left, show_null_leaves, depth + 1, count * 2);
+        this->make_array(array, node->left, show_null_leaves, depth + 1, count * 2);
     } else if (show_null_leaves == true) {
-        this->array[depth + 1].push_back({nullptr, count * 2 - (1 << (depth + 1))});
+        array[depth + 1][count * 2 - (1 << (depth + 1))] = nullptr;
     }
 
     if (node->right != nullptr) {
-        this->make_array(node->right, show_null_leaves, depth + 1, count * 2 + 1);
+        this->make_array(array, node->right, show_null_leaves, depth + 1, count * 2 + 1);
     } else if (show_null_leaves == true) {
-        this->array[depth + 1].push_back({nullptr, (count * 2 + 1) - (1 << (depth + 1))});
+        array[depth + 1][count * 2 + 1 - (1 << (depth + 1))] = nullptr;
     }
 }
 
@@ -332,25 +337,16 @@ int digit_count(int x) {
     }
 }
 
-// Auxulary function for the `print`, it outputs one node `node`, fills up to
-// `d` characters with spaces
-void print_node(Node *node, int d) {
+// Auxulary function for the `print`, it outputs one node `node` with width `width` and color. If
+// `node == nullptr`, it outputs `n`
+void print_node(Node *node, int width) {
     if (node == nullptr) {
-        printf("%*c", d, 'n');
+        cout << setw(width) << 'n';
     } else if (node->color == 'r') {
-        printf("\033[31m%*d\033[0m", d, node->inf);
+        cout << "\033[31m" << setw(width) << node->inf << "\033[0m";
     } else {
-        printf("%*d", d, node->inf);
+        cout << setw(width) << node->inf;
     }
-}
-
-// Prints space n times
-void print_space(int n) {
-    if (n < 1) {
-        return;
-    }
-    std::string s(n, ' ');
-    std::cout << s;
 }
 
 // Function for tree output
@@ -365,33 +361,28 @@ void RBTree::print(bool show_null_leaves) {
         height++;
     }
 
-    this->array.assign(height, {});
-    this->make_array(this->root, show_null_leaves);
-
     // Maximum number of digit of node in tree
     int d = std::max(digit_count(this->max()->inf), digit_count(this->min()->inf));
-    // Space at the beginning of each level
-    int init_space = height > 1 ? (d + 1) * (1 << (height - 2)) : 0;
-    for (int depth = 0; depth < height; depth++) {
-        print_space(init_space - d);
-        // Space between nodes at this level
-        int space = init_space * 2 - d;
-        if (space == 0) {
-            space = 1;
-        }
+    int width, offset = 1;
 
-        int prev_offset = 0;
-        for (auto &node : this->array[depth]) {
-            // Calculate indentation if the tree is incomplete
-            print_space((space + d) * (node.second - prev_offset));
-            print_node(node.first, d);
-            // Space after the node
-            print_space(space);
-            // Save offset for subsequent calculations
-            prev_offset = node.second + 1;
+    vector<vector<Node *>> array;
+    array.assign(height, {});
+    for (vector<Node *> &level : array) {
+        level.assign(offset, nullptr);
+        offset <<= 1;
+    }
+    this->make_array(array, this->root, show_null_leaves);
+
+    // TODO: don't use offset in loop
+    // TODO: handle leaves
+    for (vector<Node *> &level : array) {
+        offset >>= 1;
+        width = (d + 1) * offset / 2;
+        for (auto node : level) {
+            print_node(node, width);
+            width = (d + 1) * offset;
         }
-        std::cout << "\n";
-        init_space /= 2;
+        cout << '\n';
     }
 }
 

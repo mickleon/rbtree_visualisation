@@ -26,7 +26,6 @@ public:
     void clear();
 
 private:
-    std::vector<std::vector<std::pair<Node *, int>>> array;
     Node *root;
     void right_rotate(Node *p);
     void left_rotate(Node *p);
@@ -39,6 +38,9 @@ private:
     void clear(Node *node);
     int height(Node *node);
     int height();
-    void make_array(Node *node, bool show_null_leaves = false, int depth = 0, int count = 1);
+    void make_array(
+        std::vector<std::vector<Node *>> &array, Node *node, bool show_null_leaves = false,
+        int depth = 0, int count = 1
+    );
 };
 #endif
