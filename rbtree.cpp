@@ -7,6 +7,17 @@
 
 using std::vector, std::cout, std::setw;
 
+Node::Node(int value): inf(value), left(nullptr), right(nullptr), parent(nullptr), color('r') {}
+
+RBTree::RBTree(): root(nullptr) {}
+
+// "nullptr" node that used for `print(show_null_leaves = true)`
+const Node *RBTree::NIL = new Node(0);
+
+RBTree::~RBTree() {
+    clear(this->root);
+}
+
 // Rotates the tree to the left around the node `p`
 void RBTree::left_rotate(Node *p) {
     if (p == nullptr || p->right == nullptr) {
@@ -243,7 +254,7 @@ void RBTree::erase_fixup(Node *node) {
 }
 
 // Returns a pointer to a node in the subtree `node` with the value `value`
-Node *RBTree::find(Node *node, int value) {
+Node *RBTree::find(Node *node, int value) const {
     if (node == nullptr || node->inf == value) {
         return node;
     }
@@ -255,12 +266,12 @@ Node *RBTree::find(Node *node, int value) {
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node *RBTree::find(int value) {
+Node *RBTree::find(int value) const {
     return this->find(this->root, value);
 }
 
 // Returns a pointer to a node in the subtree `node` with the maximal value
-Node *RBTree::max(Node *node) {
+Node *RBTree::max(Node *node) const {
     if (node == nullptr) {
         return nullptr;
     }
@@ -273,12 +284,12 @@ Node *RBTree::max(Node *node) {
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node *RBTree::max() {
+Node *RBTree::max() const {
     return this->max(this->root);
 }
 
 // Returns a pointer to a node in the subtree `node` with the minimal value
-Node *RBTree::min(Node *node) {
+Node *RBTree::min(Node *node) const {
     if (node == nullptr) {
         return nullptr;
     }
@@ -290,11 +301,11 @@ Node *RBTree::min(Node *node) {
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-Node *RBTree::min() {
+Node *RBTree::min() const {
     return this->min(this->root);
 }
 
-int RBTree::height(Node *node) {
+int RBTree::height(Node *node) const {
     if (node == nullptr) {
         return 0;
     }
@@ -302,7 +313,7 @@ int RBTree::height(Node *node) {
 }
 
 // Overload of previous function, where `node` is a tree root `this->root`
-int RBTree::height() {
+int RBTree::height() const {
     return this->height(this->root);
 }
 
@@ -310,7 +321,7 @@ int RBTree::height() {
 // level
 void RBTree::make_array(
     vector<vector<Node *>> &array, Node *node, bool show_null_leaves, int depth, int count
-) {
+) const {
     array[depth][count - (1 << depth)] = node;
 
     if (node->left != nullptr) {
@@ -350,7 +361,7 @@ void print_node(Node *node, int width) {
 }
 
 // Function for tree output
-void RBTree::print(bool show_null_leaves) {
+void RBTree::print(bool show_null_leaves) const {
     if (this->root == nullptr) {
         std::cout << "NULL TREE\n";
         return;
