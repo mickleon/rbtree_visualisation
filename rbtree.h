@@ -27,7 +27,7 @@ public:
 
 private:
     Node *root;
-    static const Node *NIL;
+    static Node *NIL;
     void right_rotate(Node *p);
     void left_rotate(Node *p);
     void insert_fixup(Node *node);
@@ -43,5 +43,6 @@ private:
         std::vector<std::vector<Node *>> &array, Node *node, bool show_null_leaves = false,
         int depth = 0, int count = 1
     ) const;
+    static void print_node(Node *node, int width);
 };
 #endif

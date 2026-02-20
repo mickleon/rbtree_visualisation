@@ -12,7 +12,7 @@ Node::Node(int value): inf(value), left(nullptr), right(nullptr), parent(nullptr
 RBTree::RBTree(): root(nullptr) {}
 
 // "nullptr" node that used for `print(show_null_leaves = true)`
-const Node *RBTree::NIL = new Node(0);
+Node *RBTree::NIL = new Node(0);
 
 RBTree::~RBTree() {
     clear(this->root);
@@ -327,13 +327,13 @@ void RBTree::make_array(
     if (node->left != nullptr) {
         this->make_array(array, node->left, show_null_leaves, depth + 1, count * 2);
     } else if (show_null_leaves == true) {
-        array[depth + 1][count * 2 - (1 << (depth + 1))] = nullptr;
+        array[depth + 1][count * 2 - (1 << (depth + 1))] = RBTree::NIL;
     }
 
     if (node->right != nullptr) {
         this->make_array(array, node->right, show_null_leaves, depth + 1, count * 2 + 1);
     } else if (show_null_leaves == true) {
-        array[depth + 1][count * 2 + 1 - (1 << (depth + 1))] = nullptr;
+        array[depth + 1][count * 2 + 1 - (1 << (depth + 1))] = RBTree::NIL;
     }
 }
 
@@ -349,9 +349,13 @@ int digit_count(int x) {
 }
 
 // Auxulary function for the `print`, it outputs one node `node` with width `width` and color. If
-// `node == nullptr`, it outputs `n`
-void print_node(Node *node, int width) {
+// `node == RBTree::NIL`, it outputs `n`
+void RBTree::print_node(Node *node, int width = 0) {
     if (node == nullptr) {
+        if (width > 0) {
+            cout << setw(width) << ' ';
+        }
+    } else if (node == RBTree::NIL) {
         cout << setw(width) << 'n';
     } else if (node->color == 'r') {
         cout << "\033[31m" << setw(width) << node->inf << "\033[0m";
@@ -385,12 +389,11 @@ void RBTree::print(bool show_null_leaves) const {
     this->make_array(array, this->root, show_null_leaves);
 
     // TODO: don't use offset in loop
-    // TODO: handle leaves
     for (vector<Node *> &level : array) {
         offset >>= 1;
         width = (d + 1) * offset / 2;
         for (auto node : level) {
-            print_node(node, width);
+            RBTree::print_node(node, width);
             width = (d + 1) * offset;
         }
         cout << '\n';
